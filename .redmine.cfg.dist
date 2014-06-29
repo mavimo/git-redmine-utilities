@@ -1,0 +1,8 @@
+[Redmine]
+hostname=
+username=
+password=
+
+[Pattern]
+branch=%(story_prefix)-%(story_code)_%(issue_id)_%(story_name)
+message=refs #%(issue_id): %(story_prefix)-%(story_code) - %(story_name):

@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+import re
+import os
+import sys
+import getopt
+import subprocess
+
+import ConfigParser
+from redmine import Redmine
+
+def config():
+    config = ConfigParser.ConfigParser()
+    config.read(['.redmine.cfg', os.path.expanduser('~/.redmine.cfg')])
+    return {
+        'redmine' : {
+            'hostname': config.get('Redmine', 'hostname'),
+            'username': config.get('Redmine', 'username'),
+            'password': config.get('Redmine', 'password')
+        },
+        'pattern': {
+            'branch': config.get('Pattern', 'branch', 1),
+            'message': config.get('Pattern', 'message', 1),
+        }
+    }
+
+def main(argv):
+    # Check arguments
+    if len(sys.argv[1:]) != 1:
+        print 'git ee 3600'
+        sys.exit(2)
+
+    # Load configuration
+    cfg = config()
+
+    # Get issue ID
+    issue_id = int(sys.argv[1])
+
+    # Connect to redmine
+    redmine = Redmine(cfg['redmine']['hostname'], username=cfg['redmine']['username'], password=cfg['redmine']['password'])
+
+    # Branch naming pattern
+    branch = cfg['pattern']['branch']
+    try:
+        # Get issue information
+        issue = redmine.issue.get(issue_id)
+
+        # Extract items from issue info
+        subject_items = issue.subject.split('-', 2)
+        story_prefix = subject_items[0].strip()
+        story_code = subject_items[1].strip()
+        story_name = subject_items[2].strip()
+
+        # Clean story name
+        story_name = re.sub(r"[^\w\s]", '', story_name)
+        story_name = re.sub(r"\s+", '_', story_name)
+        story_name = story_name.lower()
+
+        # Replace patterns in branch name
+        branch = branch.replace('%(story_prefix)', story_prefix)
+        branch = branch.replace('%(story_code)', story_code)
+        branch = branch.replace('%(issue_id)', str(issue_id))
+        branch = branch.replace('%(story_name)', story_name)
+
+    except Exception, e:
+        print "Error occured, argve you sure your config, or issue is correct?"
+        sys.exit(4)
+
+    # Create feature branch and get return code
+    return_code = subprocess.call('git flow feature start ' + branch, shell=True)
+
+    # Return git flow return code
+    return return_code
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
