@@ -30,7 +30,7 @@ easy_install python-redmine
 Then clone the current repository:
 
 ```
-git clone https://github.com/mavimo/**.git
+git clone https://github.com/mavimo/git-redmine-utilities.git
 ```
 
 And copy the ```git-redmine``` script on your bin folder:
