@@ -71,6 +71,14 @@ def get_commit_message(issue_id):
     return msg
 
 def main():
+    # Get default file content
+    f = open(sys.argv[1], 'r')
+    msg = f.read()
+    f.close()
+
+    if (msg.startswith('Merge branch')):
+        return 0
+
     # Get current branch
     branch = curr_branch()
 
@@ -79,11 +87,6 @@ def main():
 
     # Get commit message
     commit_msg = get_commit_message(issue_id)
-
-    # Get default file content
-    f = open(sys.argv[1], 'r')
-    msg = f.read()
-    f.close()
 
     # Rewrite file prepending the message
     f = open(sys.argv[1], 'w')
