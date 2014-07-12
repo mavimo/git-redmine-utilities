@@ -62,7 +62,7 @@ def main(argv):
         branch = branch.replace('%(story_name)', story_name)
 
     except Exception, e:
-        print "Error occured, argve you sure your config, or issue is correct?"
+        print "Error occured, are you sure your config, or issue is correct?"
         sys.exit(4)
 
     # Create feature branch and get return code

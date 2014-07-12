@@ -65,7 +65,7 @@ def get_commit_message(issue_id):
         msg = msg.replace('%(story_name)', story_name)
 
     except Exception, e:
-        print "Error occured, argve you sure your config, or branch name is correct?"
+        print "Error occured, are you sure your config, or branch name is correct?"
         sys.exit(4)
 
     return msg
