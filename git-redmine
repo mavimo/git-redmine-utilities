@@ -67,6 +67,7 @@ def main(argv):
 
     # Create feature branch and get return code
     return_code = subprocess.call('git flow feature start ' + branch, shell=True)
+    subprocess.call('git push --set-upstream origin feature/' + branch, shell=True)
 
     # Return git flow return code
     return return_code
